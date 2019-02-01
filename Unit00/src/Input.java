@@ -1,10 +1,10 @@
 //(c) A+ Computer Science
 //www.apluscompsci.com
 
-//Name -
-//Date -
-//Class -
-//Lab  -
+//Name: Natalee Chan
+//Date: January 31, 2019
+//Class: APCSA
+//Lab: Oc 1
 
 import static java.lang.System.*;
 import java.util.Scanner;
