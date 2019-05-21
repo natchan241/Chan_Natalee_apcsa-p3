@@ -171,6 +171,25 @@ public class PictureTester
 	  swan.explore();
   }
   
+  public static void testEnD()
+  {
+	  Picture beach = new Picture("src/images/beach.jpg");
+	  Picture msg = new Picture("src/images/appleicon.jpg");
+	  beach.encode(msg);
+	  beach.explore();
+	  beach.decode().explore();
+  }
+  
+  public static void testEncoderNDecoder()
+  {
+	  Picture beach = new Picture("src/images/beach.jpg");
+	  Picture msg = new Picture("src/images/msg.jpg");
+	  beach.explore();
+	  beach.redSumEncoder(msg);
+	  beach.explore();
+	  beach.RedSumDecoder().explore();
+  }
+  
   /** Main method for testing.  Every class can have a main
     * method in Java */
   public static void main(String[] args)
@@ -198,6 +217,8 @@ public class PictureTester
     //testCopy();
     //testEdgeDetection();
     //testEdgeDetection2();
+	testEncoderNDecoder();
+	//testEnD();
 	
 	//stop here
     

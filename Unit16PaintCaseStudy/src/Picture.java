@@ -16,7 +16,7 @@ import java.util.List; // resolves problem with java.awt.List and java.util.List
 public class Picture extends SimplePicture 
 {
   ///////////////////// constructors //////////////////////////////////
-  
+  private int[][] totalRedDigSum;
   /**
    * Constructor that takes no arguments 
    */
@@ -84,14 +84,14 @@ public class Picture extends SimplePicture
     return output;
     
   }
-  
+  /*
   public void scale(Picture image, String output)
   {
 	  Picture small = image.scale(0.25, 0.25);
 	  small.write("src/images/" + output);
 	  small.explore();
   }
-  
+  */
   /** Method to set the blue to 0 */
   public void zeroBlue()
   {
@@ -522,6 +522,145 @@ public class Picture extends SimplePicture
 	  }
   }
   
+  /** Hide a black and white message in the current
+  * picture by changing the red to even and then
+  * setting it to odd if the message pixel is black
+  * @param messagePict the picture with a message
+  */
+  public void encode(Picture messagePict)
+  	{
+	  Pixel[][] messagePixels = messagePict.getPixels2D();
+	  Pixel[][] currPixels = this.getPixels2D();
+	  Pixel currPixel = null;
+	  Pixel messagePixel = null;
+	  int count = 0;
+	  for (int row = 0; row < this.getHeight(); row++)
+	  {
+		  for (int col = 0; col < this.getWidth(); col++)
+		  {
+			  // if the current pixel red is odd make it even
+			  currPixel = currPixels[row][col];
+			  if (currPixel.getRed() % 2 == 1)
+				  currPixel.setRed(currPixel.getRed() - 1);
+			  messagePixel = messagePixels[row][col];
+			  if (messagePixel.colorDistance(Color.BLACK) < 50)
+			  {
+				  currPixel.setRed(currPixel.getRed() + 1);
+				  count++;
+			  }
+		  }
+	  }
+	  System.out.println(count);
+  	}
+  /**
+  * Method to decode a message hidden in the
+  * red value of the current picture
+  * @return the picture with the hidden message
+  */
+  public Picture decode()
+  	{
+	  Pixel[][] pixels = this.getPixels2D();
+	  int height = this.getHeight();
+	  int width = this.getWidth();
+	  Pixel currPixel = null;
+
+	  Pixel messagePixel = null;
+	  Picture messagePicture = new Picture(height,width);
+	  Pixel[][] messagePixels = messagePicture.getPixels2D();
+	  int count = 0;
+	  for (int row = 0; row < this.getHeight(); row++)
+	  {
+		  for (int col = 0; col < this.getWidth(); col++)
+		  {
+			  currPixel = pixels[row][col];
+			  messagePixel = messagePixels[row][col];
+			  if (currPixel.getRed() % 2 == 1)
+			  {
+				  messagePixel.setColor(Color.BLACK);
+				  count++;
+			  }
+		  }
+	  }
+	  System.out.println(count);
+	  return messagePicture;
+  	}
+  
+  public void redSumEncoder(Picture messPict)
+  {
+	  Pixel[][] messPixels = messPict.getPixels2D();
+	  Pixel[][] picPixels = this.getPixels2D();
+	  totalRedDigSum = new int[this.getHeight()][this.getWidth()];
+	
+	  Pixel picPixel = null;
+	  Pixel messPixel = null;
+	  int total = 0;
+	  
+	  int num = 0;
+	  
+	  for (int row = 0; row < this.getHeight(); row++)
+	  {
+		  for (int col = 0; col < this.getWidth(); col++)
+		  {
+			  picPixel = picPixels[row][col];
+			  num = picPixel.getRed();
+			  total = totalRedDigSum[row][col];
+			  
+			  while (num != 0)
+			  {
+				  total = total + num % 10;
+				  num = num / 10;
+			  }
+			  
+			  //System.out.println(totalRedDigSum);
+			  
+			  if (total % 2 == 0)
+			  {
+				  total += 1;
+			  }
+			  
+			  //System.out.println("After: " + totalRedDigSum);
+			  
+			  messPixel = messPixels[row][col];
+			  
+			  //System.out.println(messPixel);
+			  if (messPixel.colorDistance(Color.BLACK) < 50)
+			  {
+				  total = total - 1;
+			  }
+			  //System.out.println("Then: " + totalRedDigSum);
+			  totalRedDigSum[row][col] = total;
+		  }
+	  }
+  }
+  
+  public Picture RedSumDecoder()
+  {
+	  Pixel[][]pixels = this.getPixels2D();
+	  
+	  int height = this.getHeight();
+	  int width = this.getWidth();
+	  
+	  Pixel picPixel = null;
+	  Pixel messPixel = null;
+	  
+	  Picture messPic = new Picture(height, width);
+	  Pixel[][]messPixels = messPic.getPixels2D();
+	  
+	  for (int row = 0; row < this.getHeight(); row++)
+	  {
+		  for (int col = 0; col < this.getWidth(); col++)
+		  {
+			  picPixel = pixels[row][col];
+			  messPixel = messPixels[row][col];
+			  
+			  if (totalRedDigSum[row][col] % 2 == 0)
+			  {
+				  messPixel.setColor(Color.BLACK);
+			  }
+		  }
+	  }
+	  return messPic;
+  }
   
   /* Main method for testing - each class in Java can have a main 
    * method 
