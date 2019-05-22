@@ -183,7 +183,7 @@ public class PictureTester
   public static void testEncoderNDecoder()
   {
 	  Picture beach = new Picture("src/images/beach.jpg");
-	  Picture msg = new Picture("src/images/msg.jpg");
+	  Picture msg = new Picture("src/images/apple_icon.jpg");
 	  beach.explore();
 	  beach.redSumEncoder(msg);
 	  beach.explore();
